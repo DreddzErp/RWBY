@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 node_modules/
 public/songs/
 public/images/
 git
+=======
+node_modules/
+public/songs/
+public/images/
+git
+>>>>>>> aee91a795f565604a63afdd6f787795d54561ee1
 .env

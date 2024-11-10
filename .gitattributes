@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 *.filetype filter=lfs diff=lfs merge=lfs -text
 *.songs filter=lfs diff=lfs merge=lfs -text
 *.mp3 filter=lfs diff=lfs merge=lfs -text
 public/songs/* filter=lfs diff=lfs merge=lfs -text
 public/images/* filter=lfs diff=lfs merge=lfs -text
+=======
+*.filetype filter=lfs diff=lfs merge=lfs -text
+*.songs filter=lfs diff=lfs merge=lfs -text
+*.mp3 filter=lfs diff=lfs merge=lfs -text
+public/songs/* filter=lfs diff=lfs merge=lfs -text
+public/images/* filter=lfs diff=lfs merge=lfs -text
+>>>>>>> aee91a795f565604a63afdd6f787795d54561ee1
