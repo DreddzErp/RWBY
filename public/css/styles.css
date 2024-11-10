@@ -1,0 +1,508 @@
+/* General body styling */
+@font-face {
+    font-family: 'RWBY_Style';
+    src: url('/fonts/RWBY_Style.ttf') format('ttf');
+}
+
+body {
+    font-family: 'RWBY_Style', sans-serif;
+    background-image: url('./images/rwby.png'); /* Ensure the path is correct */
+    background-size: cover;        /* Cover the entire body */
+    background-position: center;   /* Center the background image */
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    justify-content: flex-start; /* Align items at the top */
+    align-items: center; /* Center items horizontally */
+    width: 100vw;                  /* Full viewport width */
+    margin: 0;                     /* Remove default margin */
+    min-height: 100vh;             /* Full viewport height */
+    overflow-x: hidden;            /* Prevent horizontal overflow */
+    background-repeat: no-repeat;  /* No repeat for the background image */
+    padding: 0;                    /* Remove padding */
+}
+
+/* Flexbox layout for RWBY info section */
+.rwby-info {
+    display: flex;
+    justify-content: space-between;
+    width: 90%; /* Use 90% of the screen width */
+    margin-top: 30px; /* Space from the top */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+/* Individual sections within rwby-info */
+.rwby-history, .rwby-seasons, .rwby-songs, .rwby-va-ch, .rwby-characters, .rwby-weapons {
+    width: 30%; /* Each section takes 30% of the width */
+    padding: 10px;
+    background-color: rgba(0, 0, 0, 0.6); /* Dark transparent background */
+    color: #fff;
+    border-radius: 8px;
+    margin-bottom: 20px; /* Space between sections */
+}
+
+/* Heading styles within rwby-info */
+.rwby-info h3 {
+    color: #cc0000; /* RWBY Red */
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* Styling for lists inside rwby-info */
+.rwby-seasons ul, .rwby-songs ul, .rwby-va-ch ul, .rwby-characters ul, .rwby-weapons ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.rwby-seasons li, .rwby-songs li, .rwby-va-ch li, .rwby-characters li, .rwby-weapons li {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+/* Responsive design: Stack sections on smaller screens */
+@media (max-width: 768px) {
+    .rwby-history, .rwby-seasons, .rwby-songs, .rwby-va-ch, .rwby-characters, .rwby-weapons {
+        width: 100%; /* Full width on small screens */
+        margin-bottom: 20px; /* Space between sections */
+    }
+}
+
+/* Styling for the images container */
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns with equal width */
+    gap: 1px; /* Space between images */
+    margin-top: 20px;
+}
+
+/* Style for each image item */
+.image-item {
+    display: flex;
+    flex-direction: column; /* Stack image and name vertically */
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px; /* Rounded corners for images */
+    overflow: hidden; /* Prevent overflow */
+    text-align: center; /* Center the name under the image */
+}
+
+.image-item img {
+    width: 100%; /* Full width of container */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow effect */
+}
+
+/* Style for the names below each image */
+.image-item p {
+    margin-top: 10px; /* Space between image and name */
+    font-size: 14px; /* Adjust font size */
+    color: #fff; /* White color for text */
+    font-weight: bold; /* Make name bold */
+}
+
+/* Responsive layout: Stack images vertically on smaller screens */
+@media (max-width: 768px) {
+    .image-grid {
+        grid-template-columns: 1fr; /* Stack images vertically */
+    }
+}
+
+/* Character and weapon sections */
+.rwby-characters, .rwby-weapons {
+    text-align: center;
+    margin-top: 20px;
+    color: black; /* Text color */
+}
+
+.rwby-characters h3, .rwby-weapons h3 {
+    color: #cc0000; /* RWBY Red */
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+/* Grid layout for character and weapon images */
+.rwby-grid, .weapon-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns with equal width */
+    gap: 1px; /* Space between images */
+    margin-top: 20px;
+}
+
+/* Individual item styling */
+.rwby-item, .weapon-item {
+    display: flex;
+    flex-direction: column; /* Stack image and name vertically */
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px; /* Rounded corners for images */
+    overflow: hidden; /* Prevent overflow */
+    text-align: center; /* Center the name under the image */
+}
+
+/* Image styling */
+.rwby-item img, .weapon-item img {
+    width: 100%; /* Full width of container */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 150px; /* Limit the width of each image */
+    border-radius: 8px; /* Rounded corners */
+}
+
+/* Name styling below each image */
+.rwby-item p, .weapon-item p {
+    margin-top: 10px; /* Space between image and name */
+    font-size: 14px; /* Adjust font size */
+    color: #fff !important; /* White color for text */
+    background-color: rgba(255, 0, 0, 0.3);
+    font-weight: bold !important; /* Make the name bold */
+    text-align: center; /* Center align the text */
+}
+
+/* Responsive design: Adjust layout for smaller screens */
+@media (max-width: 600px) {
+    .rwby-grid, .weapon-grid {
+        grid-template-columns: 1fr; /* Stack items in a single column */
+    }
+}
+
+/* Container for the greeting and logout button */
+.sidebar-welcome {
+    display: flex;
+    flex-direction: column; /* Stack the h2 and logout button vertically */
+    justify-content: flex-start; /* Align items at the top */
+    align-items: center; /* Center items horizontally */
+    margin-top: 10px; /* Add a little margin from the top */
+}
+
+/* Style for the songs section */
+.songs {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 250px; /* Limit width of the song section */
+    padding: 15px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    display: flex;
+    align-items: center; /* Align vertically in the center */
+    position: absolute; /* Position relative to the body */
+    top: 0%; /* 20px from the top of the page */
+    right: 70px; /* 20px from the right of the page */
+    width: 350px;
+    z-index: 10; /* Ensure it appears on top */
+}
+
+
+/* Style the audio controls */
+audio {
+    width: 100%; /* Make the audio player take full width */
+    border-radius: 8px; /* Rounded corners */
+    margin-top: 15px;
+    outline: none; /* Remove outline on focus */
+}
+
+/* Style the paragraph displaying the song name */
+.songs p {
+    font-size: 16px;
+    color: #f1c40f; /* RWBY yellow/golden color */
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Customize audio controls appearance */
+audio::-webkit-media-controls-panel {
+    background-color: #2c3e50; /* Dark blue background for control panel */
+    border-radius: 10px;
+    padding: 5px;
+}
+
+audio::-webkit-media-controls-play-button {
+    background-color: #cc0000; /* RWBY Red for play/pause button */
+    color: white;
+    border-radius: 50%;
+    padding: 8px;
+}
+
+audio::-webkit-media-controls-volume-slider {
+    background-color: #ecf0f1; /* Light gray for volume slider */
+    border-radius: 8px;
+}
+
+audio::-webkit-media-controls-timeline {
+    background-color: #2980b9; /* Blue timeline color */
+    border-radius: 8px;
+}
+
+audio::-webkit-media-controls-seek-backward-button,
+audio::-webkit-media-controls-seek-forward-button {
+    background-color: #3498db; /* Blue for forward and backward buttons */
+}
+
+/* If using custom play/pause button */
+.custom-play-button {
+ padding: 10px 20px;
+    background-color: #cc0000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.custom-play-button:hover {
+    background-color: #990000; /* Darker RWBY Red */
+}
+
+.rwbylogo {
+    position: absolute; /* Absolute positioning for precise placement */
+    top: 50px; /* 10px from the top of the page */
+    left: 50px; /* 10px from the left of the page */
+    width: 350px; /* Adjust the width of the logo */
+    height: auto; /* Maintain the aspect ratio */
+    z-index: 1000; /* Ensure it appears on top of other elements */
+}
+
+/* Optional: Add a little styling to the image */
+.rwbylogo img {
+    width: 100%; /* Make the image fill the container */
+    border-radius: 8px; /* Add rounded corners to the logo */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Optional shadow for effect */
+}
+
+/* Common styles for forms */
+form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+/* Heading styles */
+h3, legend {
+    color: #cc0000; /* RWBY Red */
+    text-align: center;
+    font-size: 30px;
+}
+
+legend {
+    font-weight: bold;
+    margin-bottom: 20px;
+    position: relative;
+    width: 100%;
+    padding: 0;
+}
+
+/* Label styles */
+label {
+    font-size: 20px;
+    color: #cc0000;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Input field styles */
+input[type="email"], input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 2px solid #333333; /* Dark gray border */
+    border-radius: 6px;
+    font-size: 16px;
+    color: #000000;
+    background-color: #f8f8f8;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease-in-out;
+}
+
+/* Focus styles for input fields */
+input[type="email"]:focus, input[type="password"]:focus {
+    border-color: #cc0000; /* RWBY Red on focus */
+    outline: none;
+}
+
+/* Button styles */
+button {
+    width: 100%;
+    padding: 12px;
+    font-family: 'RWBY_Style', sans-serif;
+    color: #ffffff;
+    background-color: #cc0000; /* RWBY Red */
+    border: none;
+    border-radius: 6px;
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease-in-out;
+}
+
+h1 {
+
+    text-align: center; /* Center the text */
+
+    margin-top: 200px; /* Adjust this value to move it down */
+
+    color: #cc0000; /* Optional: change the color to match your theme */
+
+}
+
+/* Style for the user's greeting */
+h2 {
+    font-size: 50px; /* Increase font size for emphasis */
+    font-weight: bold; /* Make the text bold */
+    color: red; /* Dark color for text */
+    text-align: center; /* Center the text */
+    margin-bottom: 20px; /* Add space below the header */
+}
+
+/* Style for the email part */
+h2 #userEmail {
+    color: black; /* Set the user's email color to blue */
+    font-style: italic; /* Italicize the email to make it stand out */
+}
+
+/* Button hover effect */
+button:hover {
+    background-color: #990000; /* Darker RWBY Red */
+}
+
+.form-container {
+    padding: 30px;
+    border-radius: 8px;
+    width: 400px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-container h3 {
+    color: #cc0000;
+    text-align: center;
+    font-size: 30px;
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+/* Error message styling */
+.error-message {
+    color: #cc0000; /* RWBY Red */
+    font-size: 0.9em;
+    margin-top: 5px;
+}
+
+/* Password toggle styles */
+.password-toggle {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.password-toggle input {
+    width: 100%;
+    padding: 12px;
+    padding-right: 40px;
+    border: 2px solid #333333;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.password-toggle-icon {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #cc0000; /* RWBY Red */
+    background: none;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Footer styles */
+.footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 10px;
+    width: 100%;
+    color: #fff;
+    font-size: 18px;
+    font-family: 'RWBY_Style', sans-serif;
+    border-top: 2px solid #fff;
+}
+
+.footer p {
+    color: yellow; /* Dark gray for better readability */
+    margin: 5px 0;
+    font-size: 20px;
+    text-align: center;
+    margin: 0;
+    font-weight: bold;
+}
+
+.footer a {
+    color: #cc0000; /* RWBY Red */
+    text-decoration: none;
+    font-size: 20px;
+    text-align: center;
+}
+
+.footer a:hover {
+    color: #990000; /* Darker RWBY Red */
+    text-decoration: underline;
+}
+
+/* Forgot Password specific styles */
+.forgot-password {
+    background-color: #1a1a1a; /* Dark background */
+}
+
+/* Reset Password page */
+.reset-password form {
+    width: 100%;
+    padding: 30px;
+}
+
+.reset-password input[type="email"] {
+    color: #000000;
+    border: 2px solid #333333;
+}
+
+.reset-password button {
+    background-color: #cc0000; /* RWBY Red */
+    color: #ffffff;
+}
+
+.reset-password button:hover {
+    background-color: #990000; /* Darker RWBY Red */
+}
+
+.logout-button {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px; /* Add some space above the button */
+}
+
+.logout-button:hover {
+    background-color: #2980b9; /* Change color on hover */
+}
+
+/* Hide the list item container used earlier */
+.logout-container {
+    display: none;
+}
