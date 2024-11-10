@@ -44,8 +44,8 @@ connectToDatabase();
 
 // Mongoose Connection
 mongoose.connect(mongoUri)
-  .then(() => console.log('MongoDB connected'))
-  .catch(err => console.log('MongoDB connection error:', err));
+  .then(() => console.log('Mongoose connected'))
+  .catch(err => console.log('Mongooose connection error:', err));
 
 // Define Token Schema and Model
 const tokenSchema = new mongoose.Schema({
@@ -66,7 +66,7 @@ const User = mongoose.model('User', userSchema);
 
 // Session Middleware
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'your-session-secret', 
+  secret: process.env.SESSION_SECRET || '634da53dd0d071cf4c1708c192c6fa7773befa634ad795ba66b2f98dfd28bb25a70afeb15970d2c38e3986efa47ed9eea571262029a0b86971774efe45259ced', 
   resave: false,
   saveUninitialized: true,
   store: MongoStore.create({ mongoUrl: mongoUri }),
@@ -120,6 +120,8 @@ app.post('/forgot-password', async (req, res) => {
     res.status(500).json({ message: 'Error processing request' });
   }
 });
+
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Send Reset Code Email
 async function sendResetCodeEmail(email, resetCode) {
@@ -254,9 +256,33 @@ app.post('/login', loginLimiter, async (req, res) => {
   }
 });
 
+// Serve user details (email)
+app.get('/user-details', (req, res) => {
+  if (req.session.email) {
+      return res.json({
+          success: true,
+          user: {
+              email: req.session.email // Send the user's email from the session
+          }
+      });
+  } else {
+      return res.json({ success: false, message: 'User not logged in.' });
+  }
+});
+
+app.post('/logout', (req, res) => {
+  req.session.destroy((err) => {
+      if (err) {
+          return res.json({ success: false, message: 'Logout failed' });
+      }
+      res.json({ success: true });
+  });
+});
+
 // Dashboard route (protected by authentication)
 app.get('/dashboard', isAuthenticated, async (req, res) => {
-  res.json({ message: 'Welcome to your dashboard!' });
+  const userEmail = req.session.email;
+  res.json({ message: `Welcome to your Dashboard, ${userEmail}!` });
 });
 
 app.listen(PORT, () => {
