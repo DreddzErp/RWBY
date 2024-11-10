@@ -1,4 +1,5 @@
 node_modules/
 public/songs/
 public/images/
+git
 .env
