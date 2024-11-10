@@ -10,42 +10,25 @@ const validator = require('validator');
 const bodyParser = require('body-parser');
 const sgMail = require('@sendgrid/mail');
 const mongoose = require('mongoose');
-const { MongoClient } = require('mongodb'); // Import MongoClient here
+const path = require('path'); // Add this line
 const bcrypt = require('bcrypt');
 const mongoUri = process.env.MONGODB_URI || 'mongodb+srv://dredderp:6gbfUqmeFELQ83Mu@dredddb.7gkij.mongodb.net/';
-const client = new MongoClient(mongoUri); 
+
 const PORT = process.env.PORT || 3000;
 
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));  // Serve static files from 'public' folder
-app.use(helmet()); 
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(helmet());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// MongoDB setup 
-let usersCollection;
-
-async function connectToDatabase() {
-  try {
-    await client.connect();
-    console.log('MongoDB connected');
-    const database = client.db('test');
-    usersCollection = database.collection('users'); 
-  } catch (err) {
-    console.error('Failed to connect to MongoDB', err);
-    process.exit(1);
-  }
-}
-
-connectToDatabase();
-
-// Mongoose Connection
 mongoose.connect(mongoUri)
   .then(() => console.log('Mongoose connected'))
-  .catch(err => console.log('Mongooose connection error:', err));
+  .catch(err => console.log('Mongoose connection error:', err));
+
 
 // Define Token Schema and Model
 const tokenSchema = new mongoose.Schema({
@@ -70,7 +53,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   store: MongoStore.create({ mongoUrl: mongoUri }),
-  cookie: { secure: false } // Set to true for HTTPS in production
+  cookie: { secure: process.env.NODE_ENV === 'production', httpOnly: true }
 }));
 
 // Authentication Middleware
@@ -98,22 +81,18 @@ function generateRandomString(length) {
   return result;
 }
 
-// Forgot Password Endpoint
 app.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).send('Email is required');
-
   try {
     let token = await Token.findOne({ email });
     const resetToken = generateRandomString(32);
-
     if (token) {
       token.token = resetToken;
       await token.save();
     } else {
       await new Token({ email, token: resetToken }).save();
     }
-
     res.status(200).json({ message: 'Password reset token generated and saved' });
   } catch (error) {
     console.error('Error processing request:', error);
