@@ -10,45 +10,39 @@ const validator = require('validator');
 const bodyParser = require('body-parser');
 const sgMail = require('@sendgrid/mail');
 const mongoose = require('mongoose');
-const { MongoClient } = require('mongodb'); // Import MongoClient here
 const bcrypt = require('bcrypt');
 const mongoUri = process.env.MONGODB_URI || 'mongodb+srv://dredderp:6gbfUqmeFELQ83Mu@dredddb.7gkij.mongodb.net/';
-const client = new MongoClient(mongoUri); 
+
+// Set up MongoDB connection with mongoose
+mongoose.connect(mongoUri)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('Failed to connect to MongoDB:', err));
+
+// Set up SendGrid
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 const PORT = process.env.PORT || 3000;
 
-// Middlewares
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + "/public"));  // Serve static files from 'public' folder
-app.use('/node_modules', express.static("node_modules"))
+app.use(express.static(__dirname + "/public"));
+app.use('/node_modules', express.static("node_modules"));
 app.use(helmet()); 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// MongoDB setup 
-let usersCollection;
+// Session Middleware
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'some-secret-key', 
+  resave: false,
+  saveUninitialized: true,
+  store: MongoStore.create({ mongoUrl: mongoUri }),
+  cookie: { secure: process.env.NODE_ENV === 'production' } // Secure cookie for production
+}));
 
-async function connectToDatabase() {
-  try {
-    await client.connect();
-    console.log('MongoDB connected');
-    const database = client.db('test');
-    usersCollection = database.collection('users'); 
-  } catch (err) {
-    console.error('Failed to connect to MongoDB', err);
-    process.exit(1);
-  }
-}
-
-connectToDatabase();
-
-// Mongoose Connection
-mongoose.connect(mongoUri)
-  .then(() => console.log('Mongoose connected'))
-  .catch(err => console.log('Mongooose connection error:', err));
-
-// Define Token Schema and Model
+// Define Mongoose User and Token models
 const tokenSchema = new mongoose.Schema({
   email: { type: String, required: true },
   token: { type: String, required: true },
@@ -56,7 +50,6 @@ const tokenSchema = new mongoose.Schema({
 });
 const Token = mongoose.model('Token', tokenSchema);
 
-// Define User Schema and Model
 const userSchema = new mongoose.Schema({
   emaildb: { type: String, required: true },
   password: { type: String, required: true },
@@ -64,15 +57,6 @@ const userSchema = new mongoose.Schema({
   resetExpires: Date,
 });
 const User = mongoose.model('User', userSchema);
-
-// Session Middleware
-app.use(session({
-  secret: process.env.SESSION_SECRET || '634da53dd0d071cf4c1708c192c6fa7773befa634ad795ba66b2f98dfd28bb25a70afeb15970d2c38e3986efa47ed9eea571262029a0b86971774efe45259ced', 
-  resave: false,
-  saveUninitialized: true,
-  store: MongoStore.create({ mongoUrl: mongoUri }),
-  cookie: { secure: false } // Set to true for HTTPS in production
-}));
 
 // Authentication Middleware
 function isAuthenticated(req, res, next) {
@@ -89,7 +73,7 @@ function hashPassword(password) {
   return bcrypt.hashSync(password, saltRounds);
 }
 
-// Generate Random String
+// Generate Random String for token
 function generateRandomString(length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
@@ -99,7 +83,35 @@ function generateRandomString(length) {
   return result;
 }
 
-// Forgot Password Endpoint
+// Sign Up Route
+app.post('/signup', async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ success: false, message: 'Email and password are required' });
+  }
+
+  try {
+    const existingUser = await User.findOne({ emaildb: email });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: 'Email already registered' });
+    }
+
+    if (!isValidPassword(password)) {
+      return res.status(400).json({ success: false, message: 'Password does not meet complexity requirements' });
+    }
+
+    const hashedPassword = hashPassword(password);
+    await User.create({ emaildb: email, password: hashedPassword });
+
+    res.json({ success: true, message: 'Account created successfully' });
+  } catch (error) {
+    console.error('Error during signup:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
+// Password Reset Request
 app.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).send('Email is required');
@@ -122,9 +134,7 @@ app.post('/forgot-password', async (req, res) => {
   }
 });
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-// Send Reset Code Email
+// Send Password Reset Code via Email
 async function sendResetCodeEmail(email, resetCode) {
   const msg = {
     to: email,
@@ -162,7 +172,7 @@ app.post('/send-password-reset', async (req, res) => {
   }
 });
 
-// Reset Password
+// Reset Password Route
 app.post('/reset-password', async (req, res) => {
   const { resetKey, newPassword } = req.body;
   try {
@@ -176,7 +186,6 @@ app.post('/reset-password', async (req, res) => {
     user.resetExpires = null;
     await user.save();
 
-    // Send success response
     res.json({ success: true, message: 'Password reset successfully' });
   } catch (error) {
     console.error('Error resetting password:', error);
@@ -184,34 +193,7 @@ app.post('/reset-password', async (req, res) => {
   }
 });
 
-// Sign Up
-app.post('/signup', async (req, res) => {
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ success: false, message: 'Email and password are required' });
-  }
-
-  try {
-    const existingUser = await usersCollection.findOne({ emaildb: email });
-    if (existingUser) {
-      return res.status(400).json({ success: false, message: 'Email already registered' });
-    }
-
-    if (!isValidPassword(password)) {
-      return res.status(400).json({ success: false, message: 'Password does not meet complexity requirements' });
-    }
-
-    const hashedPassword = hashPassword(password);
-    await usersCollection.insertOne({ emaildb: email, password: hashedPassword, createdAt: new Date() });
-
-    res.json({ success: true, message: 'Account created successfully' });
-  } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
-  }
-});
-
+// Utility function to validate password
 function isValidPassword(password) {
   const regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
   return regex.test(password);
@@ -220,11 +202,8 @@ function isValidPassword(password) {
 // Login Rate Limiter
 const loginLimiter = rateLimit({
   windowMs: 30 * 60 * 1000, // 30 minutes
-  max: 10, // Limit each IP to 5 requests per windowMs
-  message: 'Too many login attempts, please try again after 30 minutes.',
-  handler: function (req, res, next, options) {
-    res.status(options.statusCode).json({ success: false, message: options.message });
-  }
+  max: 10, // Allow more requests
+  message: 'Too many login attempts, please try again later.',
 });
 
 app.post('/login', loginLimiter, async (req, res) => {
@@ -237,7 +216,7 @@ app.post('/login', loginLimiter, async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid email format.' });
     }
 
-    const user = await usersCollection.findOne({ emaildb: email });
+    const user = await User.findOne({ emaildb: email });
     if (!user) {
       return res.status(400).json({ success: false, message: 'Invalid email or password.' });
     }
@@ -259,31 +238,11 @@ app.post('/login', loginLimiter, async (req, res) => {
 
 // Serve user details (email)
 app.get('/user-details', (req, res) => {
-  if (req.session.email) {
-      return res.json({
-          success: true,
-          user: {
-              email: req.session.email // Send the user's email from the session
-          }
-      });
+  if (req.session && req.session.email) {
+    res.json({ email: req.session.email });
   } else {
-      return res.json({ success: false, message: 'User not logged in.' });
+    res.status(401).json({ message: 'Not authenticated' });
   }
-});
-
-app.post('/logout', (req, res) => {
-  req.session.destroy((err) => {
-      if (err) {
-          return res.json({ success: false, message: 'Logout failed' });
-      }
-      res.json({ success: true });
-  });
-});
-
-// Dashboard route (protected by authentication)
-app.get('/dashboard', isAuthenticated, async (req, res) => {
-  const userEmail = req.session.email;
-  res.json({ message: `Welcome to your Dashboard, ${userEmail}!` });
 });
 
 app.listen(PORT, () => {
