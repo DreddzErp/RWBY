@@ -98,11 +98,6 @@ function generateRandomString(length) {
   return result;
 }
 
-// Root Route - Handle "Cannot GET /" error
-app.get('/', (req, res) => {
-  res.send('Welcome to the Password Reset App! Please use the correct API routes for your requests.');
-});
-
 // Forgot Password Endpoint
 app.post('/forgot-password', async (req, res) => {
   const { email } = req.body;
