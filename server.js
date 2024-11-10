@@ -285,9 +285,10 @@ app.get('/dashboard', isAuthenticated, async (req, res) => {
   res.json({ message: `Welcome to your Dashboard, ${userEmail}!` });
 });
 
-app.get('/', (req, res) => {
-  res.send('/login'); // Simple message or can redirect to another route
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html')); // Ensure 'login.html' exists
 });
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
