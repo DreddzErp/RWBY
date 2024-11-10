@@ -1,8 +1,11 @@
 /* General body styling */
 @font-face {
     font-family: 'RWBY_Style';
-    src: url('/fonts/RWBY_Style.ttf') format('ttf');
+    src: url('/fonts/RWBY_Style.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }
+
 
 body {
     font-family: 'RWBY_Style', sans-serif;
