@@ -144,20 +144,19 @@
         <p>Do you believe in destiny?</p>
     </footer>
     <script>
-    // Fetch user details when the page loads
     document.addEventListener('DOMContentLoaded', function () {
         fetchUserDetails();
     });
 
     async function fetchUserDetails() {
         try {
-            const response = await fetch('/user-details', { credentials: 'include' });
+            const response = await fetch('/user-details', { credentials: 'include' }); // Send credentials with the request
             if (!response.ok) {
                 throw new Error('Failed to fetch user details.');
             }
             const data = await response.json();
             if (data.success) {
-                // Update the element with user email
+                // Update the element with the user's email from the server
                 document.getElementById('userEmail').textContent = data.user.email;
             } else {
                 console.error('Failed to fetch user details:', data.message);
@@ -166,6 +165,7 @@
             console.error('Error fetching user details:', error);
         }
     }
+
 
     // Add logout functionality
     document.getElementById('logoutButton').addEventListener('click', function (event) {
@@ -177,10 +177,10 @@
         try {
             const response = await fetch('/logout', {
                 method: 'POST',
-                credentials: 'include'
+                credentials: 'include' // Send the session cookie with the request
             });
             if (response.ok) {
-                // Redirect to login page
+                // Redirect to login page after successful logout
                 window.location.href = 'login.html';
             } else {
                 console.error('Logout failed');
@@ -189,6 +189,7 @@
             console.error('Error during logout:', error);
         }
     }
+
 
     // Song list for RWBY
     const songs = [
