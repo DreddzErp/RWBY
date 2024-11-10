@@ -25,6 +25,12 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+  // Serve the reset-password page
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+
 mongoose.connect(mongoUri)
   .then(() => console.log('Mongoose connected'))
   .catch(err => console.log('Mongoose connection error:', err));
