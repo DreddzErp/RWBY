@@ -26,9 +26,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html')); // Ensure 'login.html' exists
+  res.sendFile(path.join(__dirname, 'public', 'login.html')); // Serve the login page
 });
-
 // MongoDB setup 
 let usersCollection;
 
@@ -287,10 +286,6 @@ app.post('/logout', (req, res) => {
 app.get('/dashboard', isAuthenticated, async (req, res) => {
   const userEmail = req.session.email;
   res.json({ message: `Welcome to your Dashboard, ${userEmail}!` });
-});
-// Serve login page (HTML)
-app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html')); // Ensure 'login.html' exists
 });
 
 app.listen(PORT, () => {
