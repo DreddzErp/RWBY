@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 3000;
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));  // Serve static files from 'public' folder
+app.use(express.static('/public'));  // Serve static files from 'public' folder
 app.use(helmet()); 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
