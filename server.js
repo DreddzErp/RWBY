@@ -284,6 +284,10 @@ app.get('/dashboard', isAuthenticated, async (req, res) => {
   const userEmail = req.session.email;
   res.json({ message: `Welcome to your Dashboard, ${userEmail}!` });
 });
+// Serve login page (HTML)
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html')); // Ensure 'login.html' exists
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
