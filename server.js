@@ -25,6 +25,10 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html')); // Ensure 'login.html' exists
+});
+
 // MongoDB setup 
 let usersCollection;
 
